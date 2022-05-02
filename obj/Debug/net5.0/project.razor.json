@@ -1,5 +1,5 @@
 {
-  "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\HealthITMiddleware.csproj",
+  "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "5.0",
@@ -15619,38 +15619,38 @@
   "RootNamespace": "HealthITMiddleware",
   "Documents": [
     {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\Shared\\_Layout.cshtml",
-      "TargetPath": "Pages\\Shared\\_Layout.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\Index.cshtml",
-      "TargetPath": "Pages\\Index.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\Privacy.cshtml",
-      "TargetPath": "Pages\\Privacy.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\_ViewImports.cshtml",
-      "TargetPath": "Pages\\_ViewImports.cshtml",
-      "FileKind": "mvc"
-    },
-    {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\Shared\\_ValidationScriptsPartial.cshtml",
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\Shared\\_ValidationScriptsPartial.cshtml",
       "TargetPath": "Pages\\Shared\\_ValidationScriptsPartial.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\Error.cshtml",
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\_ViewStart.cshtml",
+      "TargetPath": "Pages\\_ViewStart.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\Index.cshtml",
+      "TargetPath": "Pages\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\Error.cshtml",
       "TargetPath": "Pages\\Error.cshtml",
       "FileKind": "mvc"
     },
     {
-      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealthITMiddleware\\Pages\\_ViewStart.cshtml",
-      "TargetPath": "Pages\\_ViewStart.cshtml",
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\_ViewImports.cshtml",
+      "TargetPath": "Pages\\_ViewImports.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\Shared\\_Layout.cshtml",
+      "TargetPath": "Pages\\Shared\\_Layout.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\Pages\\Privacy.cshtml",
+      "TargetPath": "Pages\\Privacy.cshtml",
       "FileKind": "mvc"
     }
   ],
