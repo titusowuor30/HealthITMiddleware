@@ -57,25 +57,25 @@ namespace HealthITMiddleware
                 endpoints.MapRazorPages();
             });
         }
-       
+
         public static async Task syncPatientDetails()
         {
-            string clientUrl = "https://localhost:44336/";
-            string serverUrl = "https://localhost:44354/";
-            string clientEmail= "admin@admin.com";
-            string clientPassword = "@Admin123";
-            string serveremail = "admin@admin.com";
-            string serverpassword = "@Admin123";
-            string platformType = "client";
-            string serverToken = "";
-            string clientToken = "";
+            string clientUrl = Globals.clientUrl;
+            string serverUrl = Globals.serverUrl;
+            string clientEmail = Globals.clientEmail;
+            string clientPassword = Globals.clientPassword;
+            string serveremail = Globals.serveremail;
+            string serverpassword = Globals.serverpassword;
+            string platformType = Globals.platformType;
+            string serverToken = Globals.serverToken;
+            string clientToken = Globals.clientToken;
             while (true)
             {
-                Console.WriteLine("Waiting for one second...");
-                Thread.Sleep(1000);
+                Console.WriteLine("Waiting for 2 seconds...");
+                Thread.Sleep(2000);
 
-                  clientToken = await getToken(clientEmail, clientPassword, clientUrl);
-                  serverToken = await getToken(serveremail,serverpassword,serverUrl);
+                clientToken = await getToken(clientEmail, clientPassword, clientUrl);
+                serverToken = await getToken(serveremail, serverpassword, serverUrl);
 
                 if (serverToken != null)
                 {
@@ -94,14 +94,14 @@ namespace HealthITMiddleware
                         var response1 = await client1.GetAsync(gettUrl1);
                         var result1 = response1.Content.ReadAsStringAsync().Result;
                         Console.WriteLine(result1);
-                        List<Patient> patients=JsonConvert.DeserializeObject<List<Patient>>(result1);
+                        List<Patient> patients = JsonConvert.DeserializeObject<List<Patient>>(result1);
 
-                        Patient p=new Patient();
+                        Patient p = new Patient();
 
-                        foreach(var pat in patients)
+                        foreach (var pat in patients)
                         {
                             p = pat;
-                            if(p.Id != null)
+                            if (p.Id != null)
                             {
                                 try
                                 {
@@ -115,14 +115,15 @@ namespace HealthITMiddleware
                                         status = p.status,
                                     });
                                     var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
-                                    var postUrl2 = serverUrl + "api/Patient";
+                                    var postUrl2 = serverUrl + "api/Patients";
                                     using var client2 = new HttpClient();
                                     client2.DefaultRequestHeaders.Add("Authorization", "Bearer " + serverToken);
                                     var response2 = await client2.PostAsync(postUrl2, data2);
                                     var result2 = response2.Content.ReadAsStringAsync().Result;
                                     Console.WriteLine(result2);
 
-                                }catch (Exception ex)
+                                }
+                                catch (Exception ex)
                                 {
                                     ex.Message.ToString();
                                 }
@@ -130,46 +131,57 @@ namespace HealthITMiddleware
                                 {
                                     var json3 = JsonConvert.SerializeObject(new
                                     {
-                                        Id=p.Id,
-                                        PatientId = p.PatientId,
-                                        PatientName = p.PatientName,
-                                        PatientDiagnosis = p.PatientDiagnosis,
-                                        HomeCounty = p.HomeCounty,
-                                        delete_status = p.delete_status,
-                                        status = "S",
-                                        exported=1,
-                                    });
-                                    var data3=new StringContent(json3 , Encoding.UTF8, "application/json");
-                                    var postUrl3 = clientUrl + "api/Patients/" + p.Id;
-                                    using var client3 = new HttpClient();
-                                    client3.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
-                                    var response3= await client3.PutAsync(postUrl3, data3);
-                                    var result3= response3.Content.ReadAsStringAsync().Result;
-                                    Console.WriteLine(response3);
-                                }
-                                catch (Exception ex)
-                                {
-                                    ex.Message.ToString();
-                                    var errjson= JsonConvert.SerializeObject(new
-                                    {
                                         Id = p.Id,
                                         PatientId = p.PatientId,
                                         PatientName = p.PatientName,
                                         PatientDiagnosis = p.PatientDiagnosis,
                                         HomeCounty = p.HomeCounty,
                                         delete_status = p.delete_status,
-                                        status = "F",
-                                        exported = 0,
+                                        status = "S",
+                                        exported = 1,
                                     });
-                                    var data4 = new StringContent(errjson, Encoding.UTF8, "application/json");
-                                    var postUrl4 = clientUrl + "api/Patients/" + p.Id;
-                                    using var client4 = new HttpClient();
-                                    client4.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
-                                    var response4 = await client4.PutAsync(postUrl4, data4);
-                                    var result3 = response4.Content.ReadAsStringAsync().Result;
-                                    Console.WriteLine(response4);
+                                    var data3 = new StringContent(json3, Encoding.UTF8, "application/json");
+                                    var postUrl3 = clientUrl + "api/Patients/" + p.Id;
+                                    using var client3 = new HttpClient();
+                                    client3.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
+                                    var response3 = await client3.PutAsync(postUrl3, data3);
+                                    var result3 = response3.Content.ReadAsStringAsync().Result;
+                                    Console.WriteLine(response3);
+                                    if (p.Id != null && response3 == null)//add track record for failed transactions
+                                    {
+                                        try
+                                        {
+                                            var errjson = JsonConvert.SerializeObject(new
+                                            {
+                                                Id = p.Id,
+                                                PatientId = p.PatientId,
+                                                PatientName = p.PatientName,
+                                                PatientDiagnosis = p.PatientDiagnosis,
+                                                HomeCounty = p.HomeCounty,
+                                                delete_status = p.delete_status,
+                                                status = "F",
+                                                exported = 0,
+                                            });
+                                            var data4 = new StringContent(errjson, Encoding.UTF8, "application/json");
+                                            var postUrl4 = clientUrl + "api/Patients/" + p.Id;
+                                            using var client4 = new HttpClient();
+                                            client4.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
+                                            var response4 = await client4.PutAsync(postUrl4, data4);
+                                            var result4 = response4.Content.ReadAsStringAsync().Result;
+                                            Console.WriteLine(result4);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            ex.Message.ToString();
+                                        }
+                                    }
                                 }
-                          }
+                                catch (Exception ex)
+                                {
+                                    ex.Message.ToString();
+
+                                }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -180,7 +192,7 @@ namespace HealthITMiddleware
             }
         }
 
-        public static async Task<string> getToken(string email, string password,string url)
+        public static async Task<string> getToken(string email, string password, string url)
         {
             var json = JsonConvert.SerializeObject(new
             {
@@ -189,9 +201,9 @@ namespace HealthITMiddleware
             });
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             var posturl = url + "api/AuthManagement/Login";
-            using var client= new HttpClient();
+            using var client = new HttpClient();
             var response = await client.PostAsync(posturl, data);
-            var result =response.Content.ReadAsStringAsync().Result;
+            var result = response.Content.ReadAsStringAsync().Result;
             tokenDetails tokendetails = JsonConvert.DeserializeObject<tokenDetails>(result);
             return tokendetails.token;
         }

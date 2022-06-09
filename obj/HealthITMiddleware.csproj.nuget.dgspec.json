@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj": {}
+    "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj": {
+    "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
+        "projectUniqueName": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
         "projectName": "HealthITMiddleware",
-        "projectPath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
+        "projectPath": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
         "packagesPath": "C:\\Users\\Masterspace\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\obj\\",
+        "outputPath": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Masterspace\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -67,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.105\\RuntimeIdentifierGraph.json"
         }
       }
     }
