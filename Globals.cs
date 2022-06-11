@@ -3,7 +3,7 @@ namespace HealthITMiddleware
     static class Globals
     {
         public static string clientUrl = "https://test.hiskenya.org/dhiske/";   //http://localhost:44356/
-        public static string serverUrl = "http://localhost:4444/";
+        public static string serverUrl = "https://test.hiskenya.org/dhiske/";
         public static string clientUsername = "Maseno";
         public static string clientPassword = "Uni@2050#";
         public static string severUsername = "Maseno";
