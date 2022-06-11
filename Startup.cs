@@ -97,25 +97,25 @@ namespace HealthITMiddleware
                     try
                     {
                         //fetch indicators
-                        var json = JsonConvert.SerializeObject(new { });
-                        var data = new StringContent(json, Encoding.UTF8, "application/json");
+                        //var json = JsonConvert.SerializeObject(new { });
+                        //var data = new StringContent(json, Encoding.UTF8, "application/json");
                         var gettUrl1 = clientUrl + "api/indicators";
                         using var client1 = new HttpClient();
                         client1.DefaultRequestHeaders.Add("Authorization", "Basic " + clientcredentials);
                         var response1 = await client1.GetAsync(gettUrl1);
                         var result1 = response1.Content.ReadAsStringAsync().Result;
-                        var jsonresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
-                        var responseinfo = jsonresult.Children().ToList();
-                        Pager pager = jsonresult["pager"].ToObject<Pager>();
-                        var indicatoritems= jsonresult["indicators"].ToList();
+                        var jsonobjectresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
+                        var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
+                        Pager pager = jsonobjectresult["pager"].ToObject<Pager>();//format pager to an object
+                        var indicatoritems= jsonobjectresult["indicators"].ToList();//get a list of indicator objects
                         Console.WriteLine(result1);
                         Console.WriteLine(indicatoritems);
                         //convert each list item to object list item
                         //List<Indicators> indicatorslist = new List<Indicators>();
                         Console.WriteLine(pager);
-                        foreach (var item in indicatoritems)
+                        foreach (var item in indicatoritems)//loop thru each indicator item
                         {
-                           Indicators indicator = item.ToObject<Indicators>();
+                           Indicators indicator = item.ToObject<Indicators>();//format each indiccator item to object before accesing it's field values
                             //indicatorslist.Add(indicator);
                             if (indicator.id != null)
                             {
