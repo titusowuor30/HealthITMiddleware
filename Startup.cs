@@ -74,7 +74,10 @@ namespace HealthITMiddleware
             //Authorization: Basic admin district
 
             //{ }
-            
+            var clientplainCredentials = System.Text.Encoding.UTF8.GetBytes(clientUsername + ":" + clientPassword);
+            var clientcredentials = System.Convert.ToBase64String(clientplainCredentials);
+            var serverplainCredentials = System.Text.Encoding.UTF8.GetBytes(serverUsername + ":" + serverUsername);
+            var servercredentials = System.Convert.ToBase64String(serverplainCredentials);
             while (true)
             {
                 Console.WriteLine(clientUrl);
@@ -82,9 +85,9 @@ namespace HealthITMiddleware
 
                 clientToken = await getToken(clientUsername, clientPassword, clientUrl);
                 Console.WriteLine(clientToken);
-                serverToken = await getToken(serverUsername, serverpassword, serverUrl);
+                //serverToken = await getToken(serverUsername, serverpassword, serverUrl);
 
-                if (serverToken != null)
+                if (clientToken != null)//serveToken
                 {
                     if (platformType.ToLower() != "client")
                     {
@@ -93,11 +96,12 @@ namespace HealthITMiddleware
 
                     try
                     {
+                        //fetch indicators
                         var json = JsonConvert.SerializeObject(new { });
                         var data = new StringContent(json, Encoding.UTF8, "application/json");
-                        var gettUrl1 = clientUrl + "api/Patients/search?asc=asc&status=0,F&exported=0&limit=1";
+                        var gettUrl1 = clientUrl + "api/indicators";
                         using var client1 = new HttpClient();
-                        client1.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
+                        client1.DefaultRequestHeaders.Add("Authorization", "Basic " + clientcredentials);
                         var response1 = await client1.GetAsync(gettUrl1);
                         var result1 = response1.Content.ReadAsStringAsync().Result;
                         Console.WriteLine(result1);
@@ -202,7 +206,7 @@ namespace HealthITMiddleware
         //DHIS2 Basic Authentication
         public static async Task<Object> getToken(string username, string password, string url)
         {
-            var geturl = url+"33/me";
+            var geturl = url+"api/32/me";
             using var client = new HttpClient();
             var plainCredentials = System.Text.Encoding.UTF8.GetBytes(username+":"+password);
             var credentials = System.Convert.ToBase64String(plainCredentials);
