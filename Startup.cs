@@ -105,9 +105,9 @@ namespace HealthITMiddleware
                         var response1 = await client1.GetAsync(gettUrl1);
                         var result1 = response1.Content.ReadAsStringAsync().Result;
                         var jsonobjectresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
-                        var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
+                        //var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
                         Pager pager = jsonobjectresult["pager"].ToObject<Pager>();//format pager to an object
-                        var indicatoritems= jsonobjectresult["indicators"].ToList();//get a list of indicator objects
+                        var indicatoritems = jsonobjectresult["indicators"].ToList();//get a list of indicator objects
                         Console.WriteLine(result1);
                         Console.WriteLine(indicatoritems);
                         //convert each list item to object list item
@@ -123,8 +123,8 @@ namespace HealthITMiddleware
                                 {
                                     var json2 = JsonConvert.SerializeObject(new
                                     {
-                                        id = indicator,
-                                        displayName = indicator,
+                                        id = indicator.id,
+                                        displayName = indicator.displayName,
                                         //status = indicator.status,
                                     });
                                     var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
@@ -140,8 +140,8 @@ namespace HealthITMiddleware
                                     ex.Message.ToString();
                                     var errjson = JsonConvert.SerializeObject(new
                                     {
-                                        id = indicator,
-                                        displayName = indicator,
+                                        id = indicator.id,
+                                        displayName = indicator.displayName+"_2",
                                         //status=-1,//failed
                                         //reason = ex.Message.ToString(),
                                     });
@@ -157,7 +157,7 @@ namespace HealthITMiddleware
                                 {
                                     var json3 = JsonConvert.SerializeObject(new
                                     {
-                                        id = indicator,
+                                        id = indicator.id,
                                         displayName = indicator,
                                         //status = 1,
                                     });
