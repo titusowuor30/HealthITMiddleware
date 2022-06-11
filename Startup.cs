@@ -71,10 +71,11 @@ namespace HealthITMiddleware
             string clientToken = Globals.clientToken;
             while (true)
             {
-                Console.WriteLine("Waiting for 2 seconds...");
-                Thread.Sleep(2000);
+                Console.WriteLine(clientUrl);
+                //Thread.Sleep(2000);
 
-                clientToken = await getToken(clientEmail, clientPassword, clientUrl);
+                clientToken = await getToken("Maseno", "Uni@2050#", clientUrl);
+                Console.WriteLine(clientToken);
                 serverToken = await getToken(serveremail, serverpassword, serverUrl);
 
                 if (serverToken != null)
@@ -165,7 +166,7 @@ namespace HealthITMiddleware
                                             var data4 = new StringContent(errjson, Encoding.UTF8, "application/json");
                                             var postUrl4 = clientUrl + "api/Patients/" + p.Id;
                                             using var client4 = new HttpClient();
-                                            client4.DefaultRequestHeaders.Add("Authorization", "Bearer " + clientToken);
+                                            client4.DefaultRequestHeaders.Add("Cookie", "JSESSIONID=" + clientToken);//Cookie: JSESSIONID=EC9010679F
                                             var response4 = await client4.PutAsync(postUrl4, data4);
                                             var result4 = response4.Content.ReadAsStringAsync().Result;
                                             Console.WriteLine(result4);
@@ -200,17 +201,18 @@ namespace HealthITMiddleware
                 password = password,
             });
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            var posturl = url + "api/AuthManagement/Login";
+            var posturl = url + "dhiske/dhis-web-commons/security/login.action";
+            Console.WriteLine(posturl);
             using var client = new HttpClient();
             var response = await client.PostAsync(posturl, data);
             var result = response.Content.ReadAsStringAsync().Result;
             tokenDetails tokendetails = JsonConvert.DeserializeObject<tokenDetails>(result);
-            return tokendetails.token;
+            return tokendetails.ToString();
         }
 
         public class tokenDetails
         {
-            public string token { get; set; }
+            public string cookie { get; set; }
             public string success { get; set; }
             public string errors { get; set; }
         }
