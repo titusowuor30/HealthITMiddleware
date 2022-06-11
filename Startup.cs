@@ -62,21 +62,27 @@ namespace HealthITMiddleware
         {
             string clientUrl = Globals.clientUrl;
             string serverUrl = Globals.serverUrl;
-            string clientEmail = Globals.clientEmail;
+            string clientUsername = Globals.clientUsername;
             string clientPassword = Globals.clientPassword;
-            string serveremail = Globals.serveremail;
+            string serverUsername = Globals.severUsername;
             string serverpassword = Globals.serverpassword;
             string platformType = Globals.platformType;
-            string serverToken = Globals.serverToken;
-            string clientToken = Globals.clientToken;
+            Object serverToken = Globals.serverToken;
+            Object clientToken = Globals.clientToken;
+            //POST https://play.dhis2.org/dev/api/apiToken
+            //Content - Type: application / json
+            //Authorization: Basic admin district
+
+            //{ }
+            
             while (true)
             {
                 Console.WriteLine(clientUrl);
                 //Thread.Sleep(2000);
 
-                clientToken = await getToken(clientEmail, clientPassword, clientUrl);
+                clientToken = await getToken(clientUsername, clientPassword, clientUrl);
                 Console.WriteLine(clientToken);
-                serverToken = await getToken(serveremail, serverpassword, serverUrl);
+                serverToken = await getToken(serverUsername, serverpassword, serverUrl);
 
                 if (serverToken != null)
                 {
@@ -193,22 +199,17 @@ namespace HealthITMiddleware
             }
         }
 
-        public static async Task<string> getToken(string email, string password, string url)
+        //DHIS2 Basic Authentication
+        public static async Task<Object> getToken(string username, string password, string url)
         {
-            var json = JsonConvert.SerializeObject(new
-            {
-                email = email,
-                password = password,
-            });
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-            var posturl = url+ "api/authmanagement/login";
-            Console.WriteLine(posturl);
+            var geturl = url+"33/me";
             using var client = new HttpClient();
-            var response = await client.PostAsync(posturl, data);
+            var plainCredentials = System.Text.Encoding.UTF8.GetBytes(username+":"+password);
+            var credentials = System.Convert.ToBase64String(plainCredentials);
+            client.DefaultRequestHeaders.Add("Authorization", "Basic " + credentials);
+            var response = await client.GetAsync(geturl);
             var result = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine(result);
-            tokenDetails tokendetails = JsonConvert.DeserializeObject<tokenDetails>(result);
-            return tokendetails.ToString();
+            return JsonConvert.SerializeObject(new{ result });
         }
 
         public class tokenDetails
