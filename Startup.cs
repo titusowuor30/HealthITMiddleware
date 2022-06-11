@@ -74,7 +74,7 @@ namespace HealthITMiddleware
                 Console.WriteLine(clientUrl);
                 //Thread.Sleep(2000);
 
-                clientToken = await getToken("Maseno", "Uni@2050#", clientUrl);
+                clientToken = await getToken(clientEmail, clientPassword, clientUrl);
                 Console.WriteLine(clientToken);
                 serverToken = await getToken(serveremail, serverpassword, serverUrl);
 
@@ -166,7 +166,7 @@ namespace HealthITMiddleware
                                             var data4 = new StringContent(errjson, Encoding.UTF8, "application/json");
                                             var postUrl4 = clientUrl + "api/Patients/" + p.Id;
                                             using var client4 = new HttpClient();
-                                            client4.DefaultRequestHeaders.Add("Authorization", "Basic" + clientToken);
+                                            client4.DefaultRequestHeaders.Add("Authorization", "Bearer" + clientToken);
                                             var response4 = await client4.PutAsync(postUrl4, data4);
                                             var result4 = response4.Content.ReadAsStringAsync().Result;
                                             Console.WriteLine(result4);
@@ -201,11 +201,12 @@ namespace HealthITMiddleware
                 password = password,
             });
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            var posturl = url + "dhiske/dhis-web-commons/security/login.action";
+            var posturl = url+ "api/authmanagement/login";
             Console.WriteLine(posturl);
             using var client = new HttpClient();
             var response = await client.PostAsync(posturl, data);
             var result = response.Content.ReadAsStringAsync().Result;
+            Console.WriteLine(result);
             tokenDetails tokendetails = JsonConvert.DeserializeObject<tokenDetails>(result);
             return tokendetails.ToString();
         }
