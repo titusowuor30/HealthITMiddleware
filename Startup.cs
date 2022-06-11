@@ -166,7 +166,7 @@ namespace HealthITMiddleware
                                             var data4 = new StringContent(errjson, Encoding.UTF8, "application/json");
                                             var postUrl4 = clientUrl + "api/Patients/" + p.Id;
                                             using var client4 = new HttpClient();
-                                            client4.DefaultRequestHeaders.Add("Cookie", "JSESSIONID=" + clientToken);//Cookie: JSESSIONID=EC9010679F
+                                            client4.DefaultRequestHeaders.Add("Authorization", "Basic" + clientToken);
                                             var response4 = await client4.PutAsync(postUrl4, data4);
                                             var result4 = response4.Content.ReadAsStringAsync().Result;
                                             Console.WriteLine(result4);
@@ -212,7 +212,7 @@ namespace HealthITMiddleware
 
         public class tokenDetails
         {
-            public string cookie { get; set; }
+            public string token { get; set; }
             public string success { get; set; }
             public string errors { get; set; }
         }
