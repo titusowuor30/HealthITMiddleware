@@ -21,7 +21,7 @@ namespace HealthITMiddleware
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _ = syncPatientDetails();
+            _ = syncIndicatorsDetails();
         }
 
         public IConfiguration Configuration { get; }
@@ -59,7 +59,7 @@ namespace HealthITMiddleware
             });
         }
 
-        public static async Task syncPatientDetails()
+        public static async Task syncIndicatorsDetails()
         {
             string clientUrl = Globals.clientUrl;
             string serverUrl = Globals.serverUrl;
@@ -83,11 +83,9 @@ namespace HealthITMiddleware
             {
                 Console.WriteLine(clientUrl);
                 //Thread.Sleep(2000);
-
                 clientToken = await getToken(clientUsername, clientPassword, clientUrl);
                 Console.WriteLine(clientToken);
                 serverToken = await getServerToken(serverUsername, serverpassword, serverUrl);
-
                 if (serverToken != null)//get serveToken
                 {
                     if (platformType.ToLower() != "client")
@@ -100,17 +98,17 @@ namespace HealthITMiddleware
                         //var json = JsonConvert.SerializeObject(new { });
                         //var data = new StringContent(json, Encoding.UTF8, "application/json");
                         //var gettUrl1 = clientUrl + "api/metadata?indicators=true&indicatorGroups=true&paging=false";//&indicatorGroups=true
-                        //var gettUrl1 = clientUrl + "api/indicators?fields=:all&paging=false";
-                        var gettUrl1 = clientUrl + "api/indicators?fields=id,name,lastUpdated,created,shortName,displayName,displayShortName" +
-                            ",displayNumeratorDescription,denominatorDescription,displayDenominatorDescription,numeratorDescription," +
-                            "dimensionItem,displayFormName,numerator,denominator,dimensionItemType,indicatorType[id,name],indicatorGroups[id,name,lastUpdated,created]&paging=false";
+                        var gettUrl1 = clientUrl + "api/indicators?fields=:all&paging=false";
+                        //var gettUrl1 = clientUrl + "api/indicators?fields=id,name,lastUpdated,created,shortName,displayName,displayShortName" +
+                        //    ",displayNumeratorDescription,denominatorDescription,displayDenominatorDescription,numeratorDescription," +
+                        //    "dimensionItem,displayFormName,numerator,denominator,dimensionItemType,indicatorType[id,name],indicatorGroups[id,name,lastUpdated,created]&paging=false";
                         using var client1 = new HttpClient();
                         client1.DefaultRequestHeaders.Add("Authorization", "Basic " + clientcredentials);
                         var response1 = await client1.GetAsync(gettUrl1);
                         
                         var result1 = response1.Content.ReadAsStringAsync().Result;
                         var jsonobjectresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
-                        var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
+                        //var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
                         var indicatoritems = jsonobjectresult["indicators"].ToList();//get a list of indicator objects
                        
                         Console.WriteLine(indicatoritems);
@@ -119,6 +117,7 @@ namespace HealthITMiddleware
                         List<string> listindicatorGroupid = new List<string>();
                         List<IndicatorGroups> listindicatorgroups = new List<IndicatorGroups>();
                         Console.WriteLine(indicatorslist);
+
                         foreach (var item in indicatoritems)//loop thru each indicator item
                         {
                            Indicators indicator = item.ToObject<Indicators>();//format each indiccator item to object before accesing it's field values
@@ -259,19 +258,19 @@ namespace HealthITMiddleware
             }
         }
 
-        //DHIS2 Basic Authentication
-        public static async Task<Object> getToken(string username, string password, string url)
+        //dhis2 basic authentication
+        public static async Task<string> getToken(string username, string password, string url)
         {
-            var geturl = url+ "api/33/me";
+            var geturl = url + "api/33/me";
             using var client = new HttpClient();
-            var plainCredentials = System.Text.Encoding.UTF8.GetBytes(username+":"+password);
-            var credentials = System.Convert.ToBase64String(plainCredentials);
-            client.DefaultRequestHeaders.Add("Authorization", "Basic " + credentials);
+            var plaincredentials = System.Text.Encoding.UTF8.GetBytes(username + ":" + password);
+            var credentials = System.Convert.ToBase64String(plaincredentials);
+            client.DefaultRequestHeaders.Add("authorization", "basic " + credentials);
             var response = await client.GetAsync(geturl);
             var result = response.Content.ReadAsStringAsync().Result;
-            return JsonConvert.SerializeObject(new{ result });
+            return result;
         }
-        //getServerToken
+        //getserverToken
         public static async Task<string> getServerToken(string username, string password, string url)
         {
             var jsondata = JsonConvert.SerializeObject(new { username, password } );
