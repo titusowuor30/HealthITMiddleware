@@ -83,8 +83,8 @@ namespace HealthITMiddleware
             {
                 Console.WriteLine(clientUrl);
                 //Thread.Sleep(2000);
-                clientToken = await getToken(clientUsername, clientPassword, clientUrl);
-                Console.WriteLine(clientToken);
+               //clientToken = await getToken(clientUsername, clientPassword, clientUrl);
+                //Console.WriteLine(clientToken);
                 serverToken = await getServerToken(serverUsername, serverpassword, serverUrl);
                 if (serverToken != null)//get serveToken
                 {
@@ -98,10 +98,10 @@ namespace HealthITMiddleware
                         //var json = JsonConvert.SerializeObject(new { });
                         //var data = new StringContent(json, Encoding.UTF8, "application/json");
                         //var gettUrl1 = clientUrl + "api/metadata?indicators=true&indicatorGroups=true&paging=false";//&indicatorGroups=true
-                        var gettUrl1 = clientUrl + "api/indicators?fields=:all&paging=false";
-                        //var gettUrl1 = clientUrl + "api/indicators?fields=id,name,lastUpdated,created,shortName,displayName,displayShortName" +
-                        //    ",displayNumeratorDescription,denominatorDescription,displayDenominatorDescription,numeratorDescription," +
-                        //    "dimensionItem,displayFormName,numerator,denominator,dimensionItemType,indicatorType[id,name],indicatorGroups[id,name,lastUpdated,created]&paging=false";
+                        //var gettUrl1 = clientUrl + "api/indicators?fields=:all&paging=false";
+                        var gettUrl1 = clientUrl + "api/indicators?fields=id,name,lastUpdated,created,shortName,displayName,displayShortName" +
+                            ",displayNumeratorDescription,denominatorDescription,displayDenominatorDescription,numeratorDescription," +
+                            "dimensionItem,displayFormName,numerator,denominator,dimensionItemType,indicatorType[id,name],indicatorGroups[id,name,lastUpdated,created]&paging=false";
                         using var client1 = new HttpClient();
                         client1.DefaultRequestHeaders.Add("Authorization", "Basic " + clientcredentials);
                         var response1 = await client1.GetAsync(gettUrl1);
@@ -123,7 +123,6 @@ namespace HealthITMiddleware
                            Indicators indicator = item.ToObject<Indicators>();//format each indiccator item to object before accesing it's field values
                            indicatorslist.Add(indicator);
                             Console.WriteLine(indicator.indicatorType.name);
-                            bool existingrecordid = false;
                             if (indicator.id != null)
                             {    //check if record already exisiting
                                 try
@@ -134,61 +133,77 @@ namespace HealthITMiddleware
                                     var response4 = await client4.GetAsync(postUrl4);
                                     var result4 = response4.Content.ReadAsStringAsync().Result;
                                     Console.WriteLine(result4);
-                                    if (JObject.Parse(result4).ToString().ToLower().Contains("not found"))
+                                    if (!JObject.Parse(result4).ToString().ToLower().Contains("not found"))
                                     {
-                                        existingrecordid = false;
+                                        continue;
                                     }
                                     else
                                     {
-                                        existingrecordid = true;
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    ex.Message.ToString();
-                                }
-                                //skip to next record if record exists
-                                if (existingrecordid)
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    //add indicator groups
-                                    var indicatorGroups = item.Last().ToList();
-                                    foreach (var group in indicatorGroups)
-                                    {
-                                        if(group.Count()>0) 
+                                        //add indicator groups
+                                        var indicatorGroups = item.Last().ToList();
+                                        foreach (var group in indicatorGroups)
                                         {
-                                            IndicatorGroups indgroup = group[0].ToObject<IndicatorGroups>();
-                                            listindicatorGroupid.Add(indgroup.id);
-                                            listindicatorgroups.Add(indgroup);
-                                            try
+                                            if (group.Count() > 0)
                                             {
-                                                var json5 = JsonConvert.SerializeObject(new
+                                                IndicatorGroups indgroup = group[0].ToObject<IndicatorGroups>();
+                                                try { 
+                                                    var postUrl6 = serverUrl + "api/listindicator_groups/" + indgroup.id;
+                                                    using var client6 = new HttpClient();
+                                                    client6.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
+                                                    var response6 = await client6.GetAsync(postUrl6);
+                                                    var result6 = response6.Content.ReadAsStringAsync().Result;
+                                                    Console.WriteLine(result6);
+                                                    if (!JObject.Parse(result6).ToString().ToLower().Contains("not found"))
+                                                    {
+                                                        continue;
+                                                    }
+                                                    else
+                                                    {
+                                                        listindicatorGroupid.Add(indgroup.id);
+                                                        listindicatorgroups.Add(indgroup);
+                                                        try
+                                                        {
+                                                            var json5 = JsonConvert.SerializeObject(new
+                                                            {
+                                                                id = indgroup.id,
+                                                                name = indgroup.name,
+                                                                lastUpdated = indgroup.lastUpdated,
+                                                                created = indgroup.created,
+                                                            });
+                                                            var data5 = new StringContent(json5, Encoding.UTF8, "application/json");
+                                                            var postUrl5 = serverUrl + "api/create_indicator_group/";//programIndicators//indicators
+                                                            using var client5 = new HttpClient();
+                                                            client5.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
+                                                            var response5 = await client5.PostAsync(postUrl5, data5);
+                                                            var result5 = response5.Content.ReadAsStringAsync().Result;
+                                                            Console.WriteLine(result5);
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            ex.Message.ToString();
+                                                        }
+                                                    }
+                                                }
+                                                catch (Exception ex)
                                                 {
-                                                    id = indgroup.id,
-                                                    name = indgroup.name,
-                                                    lastUpdated = indgroup.lastUpdated,
-                                                    created = indgroup.created,
-                                                });
-                                                var data5 = new StringContent(json5, Encoding.UTF8, "application/json");
-                                                var postUrl5 = serverUrl + "api/create_indicator_group/";//programIndicators//indicators
-                                                using var client5 = new HttpClient();
-                                                client5.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
-                                                var response5 = await client5.PostAsync(postUrl5, data5);
-                                                var result5 = response5.Content.ReadAsStringAsync().Result;
-                                                Console.WriteLine(result5);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                ex.Message.ToString();
+                                                    ex.Message.ToString();
+                                                }
                                             }
                                         }
-                                        else
+                                        //add indicator types
+                                        try
                                         {
-                                            //add indicator types
-                                            try
+                                            var postUrl7 = serverUrl + "api/listindicator_types/" + indicator.indicatorType.id;
+                                            using var client7 = new HttpClient();
+                                            client7.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
+                                            var response7= await client7.GetAsync(postUrl7);
+                                            var result7 = response7.Content.ReadAsStringAsync().Result;
+                                            Console.WriteLine(result7);
+                                            if (!JObject.Parse(result7).ToString().ToLower().Contains("not found"))
+                                            {
+                                                //if exists then skip to else
+                                            }
+                                            else
                                             {
                                                 var json3 = JsonConvert.SerializeObject(new
                                                 {
@@ -203,49 +218,54 @@ namespace HealthITMiddleware
                                                 var result3 = response3.Content.ReadAsStringAsync().Result;
                                                 Console.WriteLine(result3);
                                             }
-                                            catch (Exception ex)
+                                           
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            ex.Message.ToString();
+                                        }
+                                        //add indicators
+                                        try
+                                        {
+                                            var json2 = JsonConvert.SerializeObject(new
                                             {
-                                                ex.Message.ToString();
-                                            }
+                                                id = indicator.id,
+                                                name = indicator.name,
+                                                lastUpdated = indicator.lastUpdated,
+                                                created = indicator.created,
+                                                shortName = indicator.shortName,
+                                                displayName = indicator.displayName,
+                                                displayShortName = indicator.displayShortName,
+                                                displayNumeratorDescription = indicator.displayNumeratorDescription,
+                                                denominatorDescription = indicator.denominatorDescription,
+                                                displayDenominatorDescription = indicator.displayDenominatorDescription,
+                                                numeratorDescription = indicator.numeratorDescription,
+                                                dimensionItem = indicator.dimensionItem,
+                                                displayFormName = indicator.displayFormName,
+                                                numerator = indicator.numerator,
+                                                denominator = indicator.denominator,
+                                                dimensionItemType = indicator.dimensionItemType,
+                                                indicatorType = indicator.indicatorType.id,
+                                                indicatorGroups = listindicatorGroupid,
+                                            });
+                                            var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
+                                            var postUrl2 = serverUrl + "api/create_indicator/";//programIndicators//indicators
+                                            using var client2 = new HttpClient();
+                                            client2.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
+                                            var response2 = await client2.PostAsync(postUrl2, data2);
+                                            var result2 = response2.Content.ReadAsStringAsync().Result;
+                                            Console.WriteLine(result2);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            ex.Message.ToString();
+
                                         }
                                     }
-                                    //add indicators
-                                    try
-                                    {
-                                        var json2 = JsonConvert.SerializeObject(new
-                                        {
-                                            id = indicator.id,
-                                            name = indicator.name,
-                                            lastUpdated = indicator.lastUpdated,
-                                            created = indicator.created,
-                                            shortName = indicator.shortName,
-                                            displayName = indicator.displayName,
-                                            displayShortName = indicator.displayShortName,
-                                            displayNumeratorDescription = indicator.displayNumeratorDescription,
-                                            denominatorDescription = indicator.denominatorDescription,
-                                            displayDenominatorDescription = indicator.displayDenominatorDescription,
-                                            numeratorDescription = indicator.numeratorDescription,
-                                            dimensionItem = indicator.dimensionItem,
-                                            displayFormName = indicator.displayFormName,
-                                            numerator = indicator.numerator,
-                                            denominator = indicator.denominator,
-                                            dimensionItemType = indicator.dimensionItemType,
-                                            indicatorType = indicator.indicatorType.id,
-                                            indicatorGroups = listindicatorGroupid,
-                                        });
-                                        var data2 = new StringContent(json2, Encoding.UTF8, "application/json");
-                                        var postUrl2 = serverUrl + "api/create_indicator/";//programIndicators//indicators
-                                        using var client2 = new HttpClient();
-                                        client2.DefaultRequestHeaders.Add("Authorization", "Token " + serverToken);
-                                        var response2 = await client2.PostAsync(postUrl2, data2);
-                                        var result2 = response2.Content.ReadAsStringAsync().Result;
-                                        Console.WriteLine(result2);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        ex.Message.ToString();
-
-                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    ex.Message.ToString();
                                 }
                             }
                         }
@@ -259,17 +279,17 @@ namespace HealthITMiddleware
         }
 
         //dhis2 basic authentication
-        public static async Task<string> getToken(string username, string password, string url)
-        {
-            var geturl = url + "api/33/me";
-            using var client = new HttpClient();
-            var plaincredentials = System.Text.Encoding.UTF8.GetBytes(username + ":" + password);
-            var credentials = System.Convert.ToBase64String(plaincredentials);
-            client.DefaultRequestHeaders.Add("authorization", "basic " + credentials);
-            var response = await client.GetAsync(geturl);
-            var result = response.Content.ReadAsStringAsync().Result;
-            return result;
-        }
+        //public static async Task<string> getToken(string username, string password, string url)
+        //{
+        //    var geturl = url + "api/33/me";
+        //    using var client = new HttpClient();
+        //    var plaincredentials = System.Text.Encoding.UTF8.GetBytes(username + ":" + password);
+        //    var credentials = System.Convert.ToBase64String(plaincredentials);
+        //    client.DefaultRequestHeaders.Add("authorization", "basic " + credentials);
+        //    var response = await client.GetAsync(geturl);
+        //    var result = response.Content.ReadAsStringAsync().Result;
+        //    return result;
+        //}
         //getserverToken
         public static async Task<string> getServerToken(string username, string password, string url)
         {
