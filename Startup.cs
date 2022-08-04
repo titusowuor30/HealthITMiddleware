@@ -195,7 +195,7 @@ namespace HealthITMiddleware
                 var jsonobjectresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
                                                               //var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
                 var indicatoritems = jsonobjectresult["indicators"].ToList();//get a list of indicator objects
-                var records = indicatoritems.Count;
+                var records = (indicatoritems.Count)+43;
                 //total records
                 try
                 {
@@ -336,8 +336,8 @@ namespace HealthITMiddleware
                                 {
                                     var json2 = JsonConvert.SerializeObject(new
                                     {
-                                        id = indicator.id,
-                                        name = indicator.name,
+                                        MOH_Indicator_ID = indicator.id,
+                                        MOH_Indicator_Name = indicator.name,
                                         lastUpdated = indicator.lastUpdated,
                                         created = indicator.created,
                                         shortName = indicator.shortName,
