@@ -782,11 +782,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
+      "projectUniqueName": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
       "projectName": "HealthITMiddleware",
-      "projectPath": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
+      "projectPath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\HealthITMiddleware.csproj",
       "packagesPath": "C:\\Users\\Masterspace\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\obj\\",
+      "outputPath": "c:\\Users\\Masterspace\\Documents\\projects\\HealITProjects\\HealthITMiddleware\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Masterspace\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -842,7 +842,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.107\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.109\\RuntimeIdentifierGraph.json"
       }
     }
   }

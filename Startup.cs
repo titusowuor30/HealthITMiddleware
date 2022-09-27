@@ -22,7 +22,8 @@ namespace HealthITMiddleware
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _ = syncIndicatorsDetails();
+            //handleCsv.readCsv();
+           _ = syncIndicatorsDetails();
         }
 
         public IConfiguration Configuration { get; }
@@ -133,7 +134,7 @@ namespace HealthITMiddleware
                             TimeSpan scheduleTimeSpan = DateTime.Now - scheduleTime;
                             Console.WriteLine(scheduleTimeSpan);
                             Console.WriteLine(scheduleTimeSpan.TotalSeconds);
-                            if (DateTime.Now.DayOfWeek.ToString().ToLower() == myday && (scheduleTimeSpan.TotalSeconds >= 0 && scheduleTimeSpan.TotalSeconds <= 10))
+                            if (DateTime.Now.DayOfWeek.ToString().ToLower() == myday && (scheduleTimeSpan.TotalSeconds >= 0 || scheduleTimeSpan.TotalSeconds <= 10))
                             {
                                 await dataSynch(true);
                             }
@@ -195,7 +196,7 @@ namespace HealthITMiddleware
                 var jsonobjectresult = JObject.Parse(result1);//get childern var items = result["data"].Children().ToList();
                                                               //var responseinfo = jsonobjectresult.Children().ToList();//get all json object children
                 var indicatoritems = jsonobjectresult["indicators"].ToList();//get a list of indicator objects
-                var records = (indicatoritems.Count)+43;
+                var records = (indicatoritems.Count)+19985;
                 //total records
                 try
                 {
